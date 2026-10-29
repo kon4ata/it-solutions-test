@@ -2,7 +2,6 @@ import { ApolloDriver, type ApolloDriverConfig } from "@nestjs/apollo";
 import { Module } from "@nestjs/common";
 import { GraphQLModule } from "@nestjs/graphql";
 import { PrismaModule } from './prisma/prisma.module.js';
-import { PrismaService } from "./prisma/prisma.service.js";
 import { ProfileModule } from './profile/profile.module.js';
 
 @Module({
@@ -11,13 +10,12 @@ import { ProfileModule } from './profile/profile.module.js';
 			driver: ApolloDriver,
 			autoSchemaFile: true,
 			includeStacktraceInErrorResponses: false,
+			graphiql: false,
 		}),
 		ProfileModule,
 		PrismaModule,
 	],
 	controllers: [],
-	providers: [
-		PrismaService,
-	],
+	providers: [],
 })
 export class AppModule {}
