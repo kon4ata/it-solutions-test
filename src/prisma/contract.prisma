@@ -1,0 +1,82 @@
+// use prisma-8
+
+enum LinkType {
+  @@type("pg/text@1")
+  GITHUB = "github"
+  TELEGRAM = "telegram"
+}
+
+model Profile {
+  id          Int           @id @default(autoincrement())
+  name        String
+  title       String
+  description String
+
+  links       ProfileLink[]
+  skills      Skill[]
+  experiences Experience[]
+  projects    Project[]
+
+  @@map("profiles")
+}
+
+model ProfileLink {
+  id        Int      @id @default(autoincrement())
+  profileId Int      @map("profile_id")
+  type      LinkType
+  url       String
+
+  profile   Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  @@unique([profileId, type, url])
+  @@map("profile_links")
+}
+
+model Skill {
+  id        Int     @id @default(autoincrement())
+  profileId Int     @map("profile_id")
+  name      String
+
+  profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  @@unique([profileId, name])
+  @@map("skills")
+}
+
+model Experience {
+  id           Int           @id @default(autoincrement())
+  profileId    Int           @map("profile_id")
+  company      String
+  position     String
+  startDate    DateString    @map("start_date")
+  endDate      DateString?   @map("end_date")
+  description  String?
+
+  profile      Profile       @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  achievements Achievement[]
+
+  @@map("experiences")
+}
+
+model Achievement {
+  id           Int        @id @default(autoincrement())
+  experienceId Int        @map("experience_id")
+  text         String
+
+  experience   Experience @relation(fields: [experienceId], references: [id], onDelete: Cascade)
+
+  @@map("achievements")
+}
+
+model Project {
+  id           Int      @id @default(autoincrement())
+  profileId    Int      @map("profile_id")
+  name         String
+  url          String
+  description  String?
+  technologies String[]
+
+  profile      Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  @@map("projects")
+}
