@@ -45,8 +45,8 @@ async function main() {
 		profileId: profile.id,
 		company: "",
 		position: "",
-		startDate: "",
-		endDate: "",
+		startDate: "2000-01-01",
+		endDate: null,
 		description: ""
 	});
 
