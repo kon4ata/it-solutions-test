@@ -1,36 +1,18 @@
-# it-solutions-test
+# Тестовое задание для IT Solutions
 
-A minimal nest app with Prisma 8 and Prisma Composer.
+Перед запуском нужно создать файл .env из файла .env.example и указать нужные значения в переменные окружения
 
-## Run locally
+## Запуск через Docker
 
-```bash
-npm run dev:composer
-```
+`docker compose up -d`
 
-This builds the app and starts it with Composer. PostgreSQL projects get a local Prisma Postgres database and apply the committed migrations automatically.
+## Запуск локально в dev моде
 
-## Deploy
-
-```bash
-npm run deploy
-```
-
-The deploy script builds the framework output, provisions Prisma Postgres when selected, applies migrations, and deploys the app to Prisma Compute.
-
-The starter users are inserted idempotently from `src/prisma/seed.ts` on the first database query through the Composer service binding.
-
-
-## Prisma
-
-- Contract: `src/prisma/contract.prisma`
-- Prisma and Composer config: `prisma.config.ts`
-- Composer app: `module.ts` and `service.ts`
-
-After changing the contract, run:
-
-```bash
-npm run contract:emit
-```
-
-To use the framework's development server directly, run `npm run dev`. This direct mode requires `DATABASE_URL`.
+- Закомментировать сервис `app-back` в файле docker-compose.yaml
+- Запустить БД в докере через docker-compose.yaml, выполнив команду `docker compose up -d`
+- `npm install`
+- `npm run contract:emit`
+- `npm run db:init`
+- Заполнить в файле src/seed.ts базовую информацию о себе, структура указана в файле
+- `npm run db:seed`
+- `npm run dev`
