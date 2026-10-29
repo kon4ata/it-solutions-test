@@ -1,79 +1,79 @@
 import { db } from "./db";
 
-const {
-	Profile,
-	ProfileLink,
-	Skill,
-	Experience,
-	Achievement,
-	Project,
-} = db.orm.public;
-
 // заполнять вручную перед запуском
 async function main() {
-	const existing = await Profile.first({ name: "" });
+	await db.transaction(async (tx) => {
+		const {
+			Profile,
+			ProfileLink,
+			Skill,
+			Experience,
+			Achievement,
+			Project,
+		} = db.orm.public;
 
-	if (existing) {
-		console.log("Профиль уже существует");
+		const existing = await Profile.first({ name: "" });
 
-		return;
-	}
+		if (existing) {
+			console.log("Профиль уже существует");
 
-	await Profile.where({ name: "" }).deleteAndCount();
+			return;
+		}
 
-	const profile = await Profile.create({
-		name: "",
-		title: "",
-		description: "",
-	});
+		await Profile.where({ name: "" }).deleteAndCount();
 
-	await ProfileLink.createAll([
-		{
-			profileId: profile.id,
-			type: "github",
-			url: "",
-		},
-		{
-			profileId: profile.id,
-			type: "telegram",
-			url: "",
-		},
-	]);
+		const profile = await Profile.create({
+			name: "",
+			title: "",
+			description: "",
+		});
 
-	await Skill.createAll(
-		["Skill 1", "Skill 2", "Skill 3", "Skill 4"]
-			.map((skill) => ({
+		await ProfileLink.createAll([
+			{
+				profileId: profile.id,
+				type: "github",
+				url: "",
+			},
+			{
+				profileId: profile.id,
+				type: "telegram",
+				url: "",
+			},
+		]);
+
+		await Skill.createAll(
+			["Skill 1", "Skill 2", "Skill 3", "Skill 4"].map((skill) => ({
 				profileId: profile.id,
 				name: skill,
-			}),
-		),
-	);
+			})),
+		);
 
-	const exp = await Experience.create({
-		profileId: profile.id,
-		company: "",
-		position: "",
-		startDate: "2000-01-01",
-		endDate: null,
-		description: ""
-	});
-
-	await Achievement.createAll([
-		{
-			experienceId: exp.id,
-			text: "",
-		},
-	]);
-
-	await Project.createAll([
-		{
+		const exp = await Experience.create({
 			profileId: profile.id,
-			name: "",
-			url: "",
+			company: "",
+			position: "",
+			startDate: "2000-01-01",
+			endDate: null,
 			description: "",
-			technologies: ["Tech 1", "Tech 2", "Tech 3", "Tech 4"],
-		},
-	]);
+		});
+
+		await Achievement.createAll([
+			{
+				experienceId: exp.id,
+				text: "",
+			},
+		]);
+
+		await Project.createAll([
+			{
+				profileId: profile.id,
+				name: "",
+				url: "",
+				description: "",
+				technologies: ["Tech 1", "Tech 2", "Tech 3", "Tech 4"],
+			},
+		]);
+	});
 }
 
 main().finally(() => db.runtime().close());
