@@ -8,6 +8,11 @@ async function bootstrap() {
 	const app = await NestFactory.create(AppModule);
 
 	app.enableShutdownHooks();
+	app.enableCors({
+		origin: ["https://graph.requarks.io"],
+		credentials: true,
+		methods: ["GET", "POST", "OPTIONS"],
+	});
 
 	const rawPort = (process.env.PORT ?? "").trim();
 	const parsedPort = rawPort.length > 0 ? Number(rawPort) : Number.NaN;
