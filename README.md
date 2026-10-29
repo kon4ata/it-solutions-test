@@ -13,6 +13,6 @@
 - `npm install`
 - `npm run contract:emit`
 - `npm run db:init`
-- Заполнить в файле src/seed.ts базовую информацию о себе, структура указана в файле
+- Заполнить в файле `src/prisma/seed.ts` базовую информацию о себе, структура указана в файле
 - `npm run db:seed`
 - `npm run dev`
