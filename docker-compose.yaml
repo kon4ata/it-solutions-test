@@ -1,0 +1,43 @@
+services:
+  postgres-db:
+    container_name: it-solutions-db
+    image: postgres:18.3-alpine3.23
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+      PGDATA: /data/postgres
+    volumes:
+      - db:/data/postgres
+    networks:
+      - it-solutions-test
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 3s
+      timeout: 3s
+      retries: 5
+      start_period: 3s
+
+  app-back:
+    container_name: it-solutions-back
+    build:
+      context: .
+      dockerfile: deploy/Dockerfile
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres-db:5432/${POSTGRES_DB}
+    ports:
+      - "3000:3000"
+    networks:
+      - it-solutions-test
+    restart: unless-stopped
+    depends_on:
+      postgres-db:
+        condition: service_healthy
+
+networks:
+  it-solutions-test:
+    driver: bridge
+
+volumes:
+  db:
