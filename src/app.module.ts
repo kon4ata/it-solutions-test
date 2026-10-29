@@ -10,6 +10,7 @@ import { ProfileModule } from './profile/profile.module.js';
 		GraphQLModule.forRoot<ApolloDriverConfig>({
 			driver: ApolloDriver,
 			autoSchemaFile: true,
+			includeStacktraceInErrorResponses: false,
 		}),
 		ProfileModule,
 		PrismaModule,
