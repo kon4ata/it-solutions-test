@@ -11,6 +11,14 @@ const {
 
 // заполнять вручную перед запуском
 async function main() {
+	const existing = await Profile.first({ name: "" });
+
+	if (existing) {
+		console.log("Профиль уже существует");
+
+		return;
+	}
+
 	await Profile.where({ name: "" }).deleteAndCount();
 
 	const profile = await Profile.create({
